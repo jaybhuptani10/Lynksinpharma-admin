@@ -3,6 +3,8 @@ import { Image, BookOpen, Wrench, ArrowLeft, Settings } from "lucide-react";
 import ImagesTab from "./ImagesTab";
 import ServicesTab from "./ServicesTab";
 import CoursesTab from "./CoursesTab";
+import BlogsTab from "./BlogsTab";
+import TestimonialsTab from "./TestimonialsTab";
 
 const DashboardCard = ({ title, count, description, icon, onManage }) => {
   return (
@@ -125,6 +127,32 @@ const AdminPanel = () => {
               {!collapsed && <span className="ml-4">Services</span>}
             </div>
           </button>
+
+          <button
+            onClick={() => setActivePage("blogs")}
+            className={`w-full flex items-center p-4 ${
+              activePage === "blogs" ? "bg-blue-800" : "hover:bg-blue-800"
+            }`}
+          >
+            <div className="flex items-center">
+              <BookOpen size={20} />
+              {!collapsed && <span className="ml-4">Blogs</span>}
+            </div>
+          </button>
+
+          <button
+            onClick={() => setActivePage("testimonials")}
+            className={`w-full flex items-center p-4 ${
+              activePage === "testimonials"
+                ? "bg-blue-800"
+                : "hover:bg-blue-800"
+            }`}
+          >
+            <div className="flex items-center">
+              <BookOpen size={20} />
+              {!collapsed && <span className="ml-4">Testimonials</span>}
+            </div>
+          </button>
         </nav>
       </div>
 
@@ -173,6 +201,8 @@ const AdminPanel = () => {
         {activePage === "images" && <ImagesTab />}
         {activePage === "courses" && <CoursesTab />}
         {activePage === "services" && <ServicesTab />}
+        {activePage === "blogs" && <BlogsTab />}
+        {activePage === "testimonials" && <TestimonialsTab />}
       </div>
     </div>
   );
