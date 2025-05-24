@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Image, BookOpen, Wrench, ArrowLeft, Settings } from "lucide-react";
-import ImagesTab from "./ImagesTab";
-import ServicesTab from "./ServicesTab";
+import ImagesTab from "./Images/ImagesTab";
+import ServicesTab from "./services/ServicesTab";
 import CoursesTab from "./CoursesTab";
 import BlogsTab from "./BlogsTab";
-import TestimonialsTab from "./TestimonialsTab";
+import TestimonialsTab from "./Testimonials/TestimonialsTab";
 
 const DashboardCard = ({ title, count, description, icon, onManage }) => {
   return (
