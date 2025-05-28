@@ -16,6 +16,7 @@ const App = () => {
   // Get token from cookie if not in localStorage
   function getToken() {
     const token = localStorage.getItem("token");
+
     if (token) {
       return token;
     }

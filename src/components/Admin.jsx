@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Image, BookOpen, Wrench, ArrowLeft, Settings } from "lucide-react";
 import ImagesTab from "./Images/ImagesTab";
 import ServicesTab from "./services/ServicesTab";
-import CoursesTab from "./CoursesTab";
+import CoursesTab from "./courses/CoursesTab";
 import BlogsTab from "./BlogsTab";
 import TestimonialsTab from "./Testimonials/TestimonialsTab";
 
