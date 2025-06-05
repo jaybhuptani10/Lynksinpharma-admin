@@ -5,11 +5,28 @@ import {
   Trash2,
   BookOpen,
   Clock,
-  DollarSign,
   Monitor,
   Package,
   Settings,
 } from "lucide-react";
+
+// Add Rupee icon SVG inline
+const Rupee = (props) => (
+  <svg
+    {...props}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M6 3h12" />
+    <path d="M6 8h12" />
+    <path d="M6 13h8a4 4 0 0 1 0 8H6" />
+    <path d="M6 17h8" />
+  </svg>
+);
 
 const AddCourses = ({
   newCourse,
@@ -107,7 +124,8 @@ const AddCourses = ({
 
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
-            <DollarSign className="inline w-4 h-4 mr-1" />
+            {/* Replace DollarSign with Rupee */}
+            <Rupee className="inline w-4 h-4 mr-1" />
             Price
           </label>
           <input
