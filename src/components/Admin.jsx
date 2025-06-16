@@ -1,25 +1,17 @@
 import React, { useState, useEffect } from "react";
 import {
-  Image,
-  BookOpen,
   Wrench,
   ArrowLeft,
   Settings,
   MessageSquare,
   Mail,
-  User,
   Users,
   FileText,
 } from "lucide-react";
-import ImagesTab from "./Images/ImagesTab";
-import ServicesTab from "./services/ServicesTab";
-import CoursesTab from "./courses/CoursesTab";
-import TestimonialsTab from "./Testimonials/TestimonialsTab";
-import BlogsTab from "./Blogs.jsx/BlogsTab";
 import ContactUsTab from "./Contact/ContactUsTab";
-import BlogCommentsTab from "./comments/BlogCommentsTab";
-import UserProfileTab from "./UserProfile/UserProfileTab";
 import axios from "axios";
+import Products from "./Products/Products";
+import OrdersTab from "./Orders/OrdersTab";
 
 const DashboardCard = ({
   title,
@@ -55,20 +47,13 @@ const DashboardCard = ({
   );
 };
 
-// Placeholder components for the new sections
-
 const AdminPanel = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [activePage, setActivePage] = useState("dashboard");
   const [stats, setStats] = useState({
-    images: 0,
-    courses: 0,
-    services: 0,
-    blogs: 0,
-    testimonials: 0,
-    comments: 0,
+    products: 0,
+    orders: 0,
     contacts: 0,
-    users: 0,
   });
 
   const toggleSidebar = () => {
@@ -80,10 +65,10 @@ const AdminPanel = () => {
   };
 
   useEffect(() => {
-    // Fetch real stats from backend
+    // Fetch real stats from backend (update endpoint as needed)
     const fetchStats = async () => {
       try {
-        // Example: GET /admin/stats returns { images, courses, services, blogs, testimonials, comments, contacts, users }
+        // Example: GET /admin/stats returns { products, orders, contacts }
         const res = await axios.get("/admin/stats", {
           withCredentials: true,
         });
@@ -91,14 +76,9 @@ const AdminPanel = () => {
       } catch (err) {
         // Optionally handle error, fallback to zeros
         setStats({
-          images: 0,
-          courses: 0,
-          services: 0,
-          blogs: 0,
-          testimonials: 0,
-          comments: 0,
+          products: 0,
+          orders: 0,
           contacts: 0,
-          users: 0,
         });
       }
     };
@@ -108,13 +88,9 @@ const AdminPanel = () => {
 
   const navigationItems = [
     { id: "dashboard", label: "Dashboard", icon: Settings },
-    { id: "images", label: "Images", icon: Image },
-    { id: "courses", label: "Courses", icon: BookOpen },
-    { id: "services", label: "Services", icon: Wrench },
-    { id: "blogs", label: "Blogs", icon: FileText },
-    { id: "testimonials", label: "Testimonials", icon: MessageSquare },
+    { id: "products", label: "Products", icon: Wrench },
+    { id: "orders", label: "Orders", icon: FileText },
     { id: "contact-forms", label: "Contact Forms", icon: Mail },
-    { id: "User-Profile", label: "User Profile", icon: Users },
   ];
 
   return (
@@ -189,49 +165,21 @@ const AdminPanel = () => {
         {/* Dashboard Content */}
         {activePage === "dashboard" && (
           <div className="p-6 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-4xl mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <DashboardCard
-                  title="Images"
-                  count={stats.images}
-                  description="images"
-                  icon={<Image size={24} className="text-blue-600" />}
-                  onManage={() => handleManage("images")}
-                />
-                <DashboardCard
-                  title="Courses"
-                  count={stats.courses}
-                  description="courses"
-                  icon={<BookOpen size={24} className="text-green-600" />}
-                  onManage={() => handleManage("courses")}
-                />
-                <DashboardCard
-                  title="Services"
-                  count={stats.services}
-                  description="services"
+                  title="Products"
+                  count={stats.products}
+                  description="products"
                   icon={<Wrench size={24} className="text-purple-600" />}
-                  onManage={() => handleManage("services")}
+                  onManage={() => handleManage("products")}
                 />
                 <DashboardCard
-                  title="Blogs"
-                  count={stats.blogs}
-                  description="blog posts"
+                  title="Orders"
+                  count={stats.orders}
+                  description="orders"
                   icon={<FileText size={24} className="text-indigo-600" />}
-                  onManage={() => handleManage("blogs")}
-                />
-                <DashboardCard
-                  title="Testimonials"
-                  count={stats.testimonials}
-                  description="testimonials"
-                  icon={<MessageSquare size={24} className="text-yellow-600" />}
-                  onManage={() => handleManage("testimonials")}
-                />
-                <DashboardCard
-                  title="Comments"
-                  count={stats.comments}
-                  description="blog comments"
-                  icon={<MessageSquare size={24} className="text-pink-600" />}
-                  onManage={() => handleManage("blog-comments")}
+                  onManage={() => handleManage("orders")}
                 />
                 <DashboardCard
                   title="Contact Forms"
@@ -240,27 +188,23 @@ const AdminPanel = () => {
                   icon={<Mail size={24} className="text-teal-600" />}
                   onManage={() => handleManage("contact-forms")}
                 />
-                <DashboardCard
-                  title="Users"
-                  count={stats.users}
-                  description="registered users"
-                  icon={<Users size={24} className="text-orange-600" />}
-                  onManage={() => handleManage("user-profiles")}
-                />
               </div>
             </div>
           </div>
         )}
 
-        {/* Existing Tab Components */}
-        {activePage === "images" && <ImagesTab />}
-        {activePage === "courses" && <CoursesTab />}
-        {activePage === "services" && <ServicesTab />}
-        {activePage === "blogs" && <BlogsTab />}
-        {activePage === "testimonials" && <TestimonialsTab />}
-
+        {/* Placeholder for new tab components */}
+        {activePage === "products" && (
+          <div className="p-6">
+            <Products />
+          </div>
+        )}
+        {activePage === "orders" && (
+          <div className="p-6">
+            <OrdersTab />
+          </div>
+        )}
         {activePage === "contact-forms" && <ContactUsTab />}
-        {activePage === "User-Profile" && <UserProfileTab />}
       </div>
     </div>
   );

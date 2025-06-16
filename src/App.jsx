@@ -12,7 +12,7 @@ const App = () => {
   axios.defaults.baseURL = API_BASE_URL;
 
   axios.defaults.withCredentials = true;
-  console.log(document.cookie);
+
   // Get token from cookie if not in localStorage
   function getToken() {
     const token = localStorage.getItem("token");
