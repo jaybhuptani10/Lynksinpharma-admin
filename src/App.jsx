@@ -13,19 +13,10 @@ const App = () => {
 
   axios.defaults.withCredentials = true;
 
-  // Get token from cookie if not in localStorage
-  function getToken() {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      return token;
-    }
-    return null;
-  }
-  const token = getToken();
-  const isAuthenticated = !!token;
-
+  // PrivateRoute should always check the latest token
   const PrivateRoute = ({ children }) => {
+    const token = localStorage.getItem("token");
+    const isAuthenticated = !!token;
     return isAuthenticated ? children : <Navigate to="/login" replace />;
   };
 
@@ -49,4 +40,3 @@ const App = () => {
 };
 
 export default App;
-//testimonials employees and blogs
