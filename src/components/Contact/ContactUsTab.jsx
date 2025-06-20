@@ -35,11 +35,15 @@ const ContactUsTab = () => {
       setLoading(true);
       setError("");
       try {
-        const res = await axios.get("/contactus", {});
+        const res = await axios.get("/contactus", { withCredentials: true });
         console.log(res.data);
-        const messagesData = Array.isArray(res.data.message)
-          ? res.data.message
-          : [];
+        // Defensive: Accept both res.data.data and res.data.message as arrays
+        let messagesData = [];
+        if (Array.isArray(res.data.data)) {
+          messagesData = res.data.data;
+        } else if (Array.isArray(res.data.message)) {
+          messagesData = res.data.message;
+        }
         setMessages(messagesData);
         setFilteredMessages(messagesData);
       } catch (err) {
@@ -80,6 +84,7 @@ const ContactUsTab = () => {
       await axios.delete(`/contactus/${id}`, {
         withCredentials: true,
       });
+
       const updatedMessages = messages.filter((msg) => msg._id !== id);
       setMessages(updatedMessages);
       setFilteredMessages(
@@ -105,8 +110,11 @@ const ContactUsTab = () => {
 
   // Format date
   const formatDate = (dateString) => {
+    console.log("Formatting date:", dateString);
     if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString("en-US", {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "N/A";
+    return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -137,6 +145,11 @@ const ContactUsTab = () => {
       </div>
     );
   }
+
+  // Defensive: always use an array for filteredMessages
+  const safeFilteredMessages = Array.isArray(filteredMessages)
+    ? filteredMessages
+    : [];
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -199,7 +212,7 @@ const ContactUsTab = () => {
 
         {/* Messages Table */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          {filteredMessages.length === 0 ? (
+          {safeFilteredMessages.length === 0 ? (
             <div className="text-center py-12">
               <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -234,7 +247,7 @@ const ContactUsTab = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredMessages.map((msg) => (
+                  {safeFilteredMessages.map((msg) => (
                     <tr
                       key={msg._id}
                       className="hover:bg-gray-50 transition-colors"

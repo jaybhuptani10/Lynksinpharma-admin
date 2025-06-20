@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
+import axios from "axios";
 
 const OrdersTab = () => {
   const [orders, setOrders] = useState([]);
@@ -46,51 +47,15 @@ const OrdersTab = () => {
   };
 
   useEffect(() => {
-    // Mock data for demonstration - replace with your actual API call
-    const mockData = [
-      {
-        _id: "684c63bc88eff7daee4197c3",
-        user: {
-          _id: "684c54b4b98466ce826ec744",
-          name: "Varun",
-          email: "varunjethani2444@gmail.com",
-        },
-        products: [
-          {
-            product: {
-              _id: "684c50e553dfa3994190eeb9",
-              ChemicalName:
-                "6-(2-(Methylsulfonyl)pyrimidin-5-yl)hex-5-ynoic acid",
-              CatelogNumber: "LPS-0001",
-              CASNumber: "2356229-58-6",
-              Image:
-                "http://res.cloudinary.com/dtxt02ns7/image/upload/v1749831909/wtnuqtzud6bghxymfnmg.png",
-            },
-            quantity: 3,
-            _id: "684c63bc88eff7daee4197c4",
-          },
-        ],
-        status: "accepted",
-        createdAt: "2025-06-13T17:45:32.894Z",
-        updatedAt: "2025-06-13T17:51:06.939Z",
-        __v: 0,
-      },
-    ];
-    setOrders(mockData);
-
-    // Uncomment and use your actual API call:
-    /*
     const fetchOrders = async () => {
       try {
         const res = await axios.get("/order", { withCredentials: true });
-        console.log("Fetched orders:", res.data.data);
         setOrders(Array.isArray(res.data.data) ? res.data.data : []);
       } catch (err) {
         setOrders([]);
       }
     };
     fetchOrders();
-    */
   }, []);
 
   const handleEditOrder = (order) => {
@@ -100,16 +65,11 @@ const OrdersTab = () => {
 
   const handleSaveOrder = async (orderId) => {
     try {
-      // Replace with your actual API call:
-      /*
       await axios.post(
         "/order/update-status",
         { orderId, status: tempStatus },
         { withCredentials: true }
       );
-      */
-
-      // Mock update for demonstration
       setOrders(
         orders.map((order) =>
           order._id === orderId ? { ...order, status: tempStatus } : order
