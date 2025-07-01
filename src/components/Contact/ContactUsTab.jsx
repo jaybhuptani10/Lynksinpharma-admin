@@ -24,10 +24,6 @@ const ContactUsTab = () => {
   const [showModal, setShowModal] = useState(false);
 
   // Helper to get token from cookies
-  const getToken = () => {
-    const match = document.cookie.match(/token=([^;]+)/);
-    return match ? match[1] : "";
-  };
 
   // Fetch messages
   useEffect(() => {
@@ -110,7 +106,6 @@ const ContactUsTab = () => {
 
   // Format date
   const formatDate = (dateString) => {
-    console.log("Formatting date:", dateString);
     if (!dateString) return "N/A";
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return "N/A";
@@ -233,6 +228,9 @@ const ContactUsTab = () => {
                       Contact Info
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Phone
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Subject
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -266,6 +264,11 @@ const ContactUsTab = () => {
                               {msg.email || "N/A"}
                             </div>
                           </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm text-gray-900">
+                          {msg.phone || msg.phoneNumber || "N/A"}
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -341,7 +344,7 @@ const ContactUsTab = () => {
               </div>
 
               <div className="p-6 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Name
@@ -364,6 +367,16 @@ const ContactUsTab = () => {
                           <ExternalLink className="w-4 h-4" />
                         </a>
                       )}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Phone Number
+                    </label>
+                    <div className="text-gray-900">
+                      {selectedMessage.phone ||
+                        selectedMessage.phoneNumber ||
+                        "N/A"}
                     </div>
                   </div>
                 </div>

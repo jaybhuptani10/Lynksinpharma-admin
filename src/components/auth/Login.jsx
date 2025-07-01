@@ -230,19 +230,6 @@ const Login = () => {
           </form>
 
           {/* Additional Links */}
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Need help?{" "}
-              <button
-                type="button"
-                onClick={handleContactSupport}
-                disabled={isLoading}
-                className="font-medium text-blue-600 hover:text-blue-500 transition duration-200 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Contact Support
-              </button>
-            </p>
-          </div>
         </div>
 
         {/* Footer */}
