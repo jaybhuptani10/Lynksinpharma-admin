@@ -7,12 +7,14 @@ import {
   Mail,
   Users,
   FileText,
+  GraduationCap,
 } from "lucide-react";
 import ContactUsTab from "./Contact/ContactUsTab";
 import axios from "axios";
 import Products from "./Products/Products";
 import OrdersTab from "./Orders/OrdersTab";
 import UserProfileTab from "./UserProfile/UserProfileTab";
+import Careers from "./Career/Careers";
 
 const DashboardCard = ({
   title,
@@ -95,6 +97,7 @@ const AdminPanel = () => {
     { id: "products", label: "Products", icon: Wrench },
     { id: "orders", label: "Orders", icon: FileText },
     { id: "contact-forms", label: "Contact Forms", icon: Mail },
+    { id: "careers", label: "Careers", icon: GraduationCap },
     { id: "user-profile", label: "User Profile", icon: Users },
   ];
 
@@ -218,6 +221,7 @@ const AdminPanel = () => {
         )}
         {activePage === "contact-forms" && <ContactUsTab />}
         {activePage === "user-profile" && <UserProfileTab />}
+        {activePage === "careers" && <Careers />}
       </div>
     </div>
   );
