@@ -7,11 +7,14 @@ import {
   Mail,
   Users,
   FileText,
+  GraduationCap,
 } from "lucide-react";
 import ContactUsTab from "./Contact/ContactUsTab";
 import axios from "axios";
 import Products from "./Products/Products";
 import OrdersTab from "./Orders/OrdersTab";
+import UserProfileTab from "./UserProfile/UserProfileTab";
+import Careers from "./Career/Careers";
 
 const DashboardCard = ({
   title,
@@ -51,9 +54,10 @@ const AdminPanel = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [activePage, setActivePage] = useState("dashboard");
   const [stats, setStats] = useState({
-    products: 0,
-    orders: 0,
-    contacts: 0,
+    totalProducts: 0,
+    totalOrders: 0,
+    totalUsers: 0,
+    totalContacts: 0,
   });
 
   const toggleSidebar = () => {
@@ -65,20 +69,22 @@ const AdminPanel = () => {
   };
 
   useEffect(() => {
+    console.log("Fetching stats...");
     // Fetch real stats from backend (update endpoint as needed)
     const fetchStats = async () => {
       try {
-        // Example: GET /admin/stats returns { products, orders, contacts }
         const res = await axios.get("/admin/stats", {
           withCredentials: true,
         });
-        setStats(res.data);
+        console.log("Fetched stats:", res.data.data);
+        setStats(res.data.data);
       } catch (err) {
         // Optionally handle error, fallback to zeros
         setStats({
-          products: 0,
-          orders: 0,
-          contacts: 0,
+          totalProducts: 0,
+          totalOrders: 0,
+          totalUsers: 0,
+          totalContacts: 0,
         });
       }
     };
@@ -91,6 +97,8 @@ const AdminPanel = () => {
     { id: "products", label: "Products", icon: Wrench },
     { id: "orders", label: "Orders", icon: FileText },
     { id: "contact-forms", label: "Contact Forms", icon: Mail },
+    { id: "careers", label: "Careers", icon: GraduationCap },
+    { id: "user-profile", label: "User Profile", icon: Users },
   ];
 
   return (
@@ -156,9 +164,9 @@ const AdminPanel = () => {
                 : navigationItems.find((item) => item.id === activePage)
                     ?.label || "Dashboard"}
             </h1>
-            <button className="px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg font-medium">
+            {/* <button className="px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg font-medium">
               View Website
-            </button>
+            </button> */}
           </div>
         </header>
 
@@ -169,21 +177,28 @@ const AdminPanel = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <DashboardCard
                   title="Products"
-                  count={stats.products}
+                  count={stats.totalProducts}
                   description="products"
                   icon={<Wrench size={24} className="text-purple-600" />}
                   onManage={() => handleManage("products")}
                 />
                 <DashboardCard
                   title="Orders"
-                  count={stats.orders}
+                  count={stats.totalOrders}
                   description="orders"
                   icon={<FileText size={24} className="text-indigo-600" />}
                   onManage={() => handleManage("orders")}
                 />
                 <DashboardCard
+                  title="Users"
+                  count={stats.totalUsers}
+                  description="users"
+                  icon={<Users size={24} className="text-pink-600" />}
+                  onManage={() => handleManage("user-profile")}
+                />
+                <DashboardCard
                   title="Contact Forms"
-                  count={stats.contacts}
+                  count={stats.totalContacts}
                   description="form submissions"
                   icon={<Mail size={24} className="text-teal-600" />}
                   onManage={() => handleManage("contact-forms")}
@@ -205,6 +220,8 @@ const AdminPanel = () => {
           </div>
         )}
         {activePage === "contact-forms" && <ContactUsTab />}
+        {activePage === "user-profile" && <UserProfileTab />}
+        {activePage === "careers" && <Careers />}
       </div>
     </div>
   );

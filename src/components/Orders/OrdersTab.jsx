@@ -10,6 +10,10 @@ import {
   Clock,
   ChevronDown,
   ChevronUp,
+  ExternalLink,
+  Link,
+  Copy,
+  Check,
 } from "lucide-react";
 import axios from "axios";
 
@@ -17,9 +21,11 @@ const OrdersTab = () => {
   const [orders, setOrders] = useState([]);
   const [editingOrder, setEditingOrder] = useState(null);
   const [tempStatus, setTempStatus] = useState("");
+  const [tempTrackingUrl, setTempTrackingUrl] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [expandedOrders, setExpandedOrders] = useState(new Set());
+  const [copiedUrl, setCopiedUrl] = useState(null);
 
   const statusTypes = ["pending", "accepted", "shipped", "delivered"];
 
@@ -46,6 +52,7 @@ const OrdersTab = () => {
     },
   };
 
+  // Fetch real orders from backend
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -61,30 +68,47 @@ const OrdersTab = () => {
   const handleEditOrder = (order) => {
     setEditingOrder(order._id);
     setTempStatus(order.status);
+    setTempTrackingUrl(order.trackingUrl || "");
   };
 
   const handleSaveOrder = async (orderId) => {
     try {
-      await axios.post(
-        "/order/update-status",
-        { orderId, status: tempStatus },
-        { withCredentials: true }
-      );
+      // Update status if changed
+      if (tempStatus) {
+        await axios.post(
+          "/order/update-status",
+          { orderId, status: tempStatus },
+          { withCredentials: true }
+        );
+      }
+      // Update tracking URL if changed
+      if (typeof tempTrackingUrl === "string") {
+        await axios.post(
+          "/order/update-tracking",
+          { orderId, trackingURL: tempTrackingUrl },
+          { withCredentials: true }
+        );
+      }
+      // Update local state
       setOrders(
         orders.map((order) =>
-          order._id === orderId ? { ...order, status: tempStatus } : order
+          order._id === orderId
+            ? { ...order, status: tempStatus, trackingURL: tempTrackingUrl }
+            : order
         )
       );
       setEditingOrder(null);
       setTempStatus("");
+      setTempTrackingUrl("");
     } catch (err) {
-      alert("Failed to update order status.");
+      alert("Failed to update order status or tracking URL.");
     }
   };
 
   const handleCancelEdit = () => {
     setEditingOrder(null);
     setTempStatus("");
+    setTempTrackingUrl("");
   };
 
   const toggleOrderExpansion = (orderId) => {
@@ -95,6 +119,25 @@ const OrdersTab = () => {
       newExpanded.add(orderId);
     }
     setExpandedOrders(newExpanded);
+  };
+
+  const copyToClipboard = async (url, orderId) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiedUrl(orderId);
+      setTimeout(() => setCopiedUrl(null), 2000);
+    } catch (err) {
+      console.error("Failed to copy URL");
+    }
+  };
+
+  const isValidUrl = (string) => {
+    try {
+      new URL(string);
+      return true;
+    } catch (_) {
+      return false;
+    }
   };
 
   const filteredOrders = Array.isArray(orders)
@@ -147,6 +190,98 @@ const OrdersTab = () => {
     }
 
     return summary.join(", ");
+  };
+
+  const renderTrackingUrl = (order) => {
+    if (!order.trackingURL) {
+      return (
+        <div className="text-xs text-gray-400 italic mt-1">
+          No tracking URL provided
+        </div>
+      );
+    }
+
+    const isValid = isValidUrl(order.trackingURL);
+
+    return (
+      <div className="mt-2 p-2 bg-gray-50 rounded-lg border">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2 flex-1 min-w-0">
+            <Link className="w-4 h-4 text-blue-600 flex-shrink-0" />
+            <span className="text-xs font-medium text-gray-700">
+              Tracking URL:
+            </span>
+          </div>
+          <div className="flex items-center space-x-1">
+            <button
+              onClick={() => copyToClipboard(order.trackingURL, order._id)}
+              className="p-1 hover:bg-gray-200 rounded transition-colors"
+              title="Copy URL"
+            >
+              {copiedUrl === order._id ? (
+                <Check className="w-3 h-3 text-green-600" />
+              ) : (
+                <Copy className="w-3 h-3 text-gray-500" />
+              )}
+            </button>
+            {isValid && (
+              <a
+                href={order.trackingURL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1 hover:bg-gray-200 rounded transition-colors"
+                title="Open in new tab"
+              >
+                <ExternalLink className="w-3 h-3 text-blue-600" />
+              </a>
+            )}
+          </div>
+        </div>
+        <div className="mt-1">
+          {isValid ? (
+            <a
+              href={order.trackingURL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-blue-600 hover:text-blue-800 underline break-all block"
+            >
+              {order.trackingURL}
+            </a>
+          ) : (
+            <span className="text-xs text-red-600 break-all block">
+              {order.trackingURL} (Invalid URL)
+            </span>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderEditingUrl = () => {
+    return (
+      <div className="mt-2">
+        <label className="block text-xs font-medium text-gray-700 mb-1">
+          Tracking URL
+        </label>
+        <div className="relative">
+          <input
+            type="url"
+            placeholder="https://tracking-provider.com/track/123456"
+            value={tempTrackingUrl}
+            onChange={(e) => setTempTrackingUrl(e.target.value)}
+            className={`w-full px-3 py-2 pr-8 border rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+              tempTrackingUrl && !isValidUrl(tempTrackingUrl)
+                ? "border-red-300 bg-red-50"
+                : "border-gray-300"
+            }`}
+          />
+          <Link className="absolute right-2 top-2.5 w-4 h-4 text-gray-400" />
+        </div>
+        {tempTrackingUrl && !isValidUrl(tempTrackingUrl) && (
+          <p className="text-xs text-red-600 mt-1">Please enter a valid URL</p>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -219,7 +354,7 @@ const OrdersTab = () => {
                     Products & Quantity
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
+                    Status & Tracking
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
@@ -290,58 +425,63 @@ const OrdersTab = () => {
                             )}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-4">
                         {editingOrder === order._id ? (
-                          <select
-                            value={tempStatus}
-                            onChange={(e) => setTempStatus(e.target.value)}
-                            className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          >
-                            {statusTypes.map((status) => (
-                              <option key={status} value={status}>
-                                {statusConfig[status].label}
-                              </option>
-                            ))}
-                          </select>
+                          <div className="space-y-3">
+                            <div>
+                              <label className="block text-xs font-medium text-gray-700 mb-1">
+                                Status
+                              </label>
+                              <select
+                                value={tempStatus}
+                                onChange={(e) => setTempStatus(e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                              >
+                                {statusTypes.map((status) => (
+                                  <option key={status} value={status}>
+                                    {statusConfig[status].label}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            {renderEditingUrl()}
+                          </div>
                         ) : (
-                          getStatusBadge(order.status)
+                          <div className="space-y-2">
+                            {getStatusBadge(order.status)}
+                            {renderTrackingUrl(order)}
+                          </div>
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         {editingOrder === order._id ? (
-                          <div className="flex space-x-2">
+                          <div className="flex flex-col space-y-2">
                             <button
                               onClick={() => handleSaveOrder(order._id)}
-                              className="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                              disabled={
+                                tempTrackingUrl && !isValidUrl(tempTrackingUrl)
+                              }
+                              className="inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                               <Save className="w-4 h-4 mr-1" />
                               Save
                             </button>
                             <button
                               onClick={handleCancelEdit}
-                              className="inline-flex items-center px-3 py-1 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                              className="inline-flex items-center justify-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
                               <X className="w-4 h-4 mr-1" />
                               Cancel
                             </button>
                           </div>
                         ) : (
-                          <div className="flex space-x-2">
+                          <div className="flex flex-col space-y-2">
                             <button
                               onClick={() => handleEditOrder(order)}
-                              className="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                              className="inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                             >
                               <Edit className="w-4 h-4 mr-1" />
                               Edit
-                            </button>
-                            <button
-                              onClick={() =>
-                                alert(`Viewing details for order ${order._id}`)
-                              }
-                              className="inline-flex items-center px-3 py-1 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                            >
-                              <Eye className="w-4 h-4 mr-1" />
-                              View
                             </button>
                           </div>
                         )}
