@@ -69,14 +69,13 @@ const AdminPanel = () => {
   };
 
   useEffect(() => {
-    console.log("Fetching stats...");
     // Fetch real stats from backend (update endpoint as needed)
     const fetchStats = async () => {
       try {
         const res = await axios.get("/admin/stats", {
           withCredentials: true,
         });
-        console.log("Fetched stats:", res.data.data);
+
         setStats(res.data.data);
       } catch (err) {
         // Optionally handle error, fallback to zeros

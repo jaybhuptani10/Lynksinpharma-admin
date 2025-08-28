@@ -15,8 +15,8 @@ const App = () => {
 
   // PrivateRoute should always check the latest token
   const PrivateRoute = ({ children }) => {
-    const token = localStorage.getItem("token");
-    const isAuthenticated = !!token;
+    const admin_token = localStorage.getItem("admin_token");
+    const isAuthenticated = !!admin_token;
     return isAuthenticated ? children : <Navigate to="/login" replace />;
   };
 

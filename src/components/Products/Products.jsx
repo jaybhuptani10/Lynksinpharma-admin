@@ -47,7 +47,7 @@ const Products = () => {
 
     fetchProducts();
   }, []);
-  console.log(products);
+
   const resetForm = () => {
     setFormData({
       ChemicalName: "",

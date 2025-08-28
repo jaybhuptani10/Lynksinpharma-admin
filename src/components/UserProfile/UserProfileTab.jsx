@@ -38,7 +38,7 @@ const UserProfileTab = () => {
 
     try {
       const response = await axios.get("/admin/profile", {});
-      console.log("Profile data fetched:", response.data);
+
       setProfile(response.data.data);
     } catch (err) {
       setError(
@@ -63,7 +63,7 @@ const UserProfileTab = () => {
       const response = await axios.put("/admin/profile", profile, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          Authorization: `Bearer ${localStorage.getItem("admin_token") || ""}`,
         },
       });
 
@@ -92,13 +92,15 @@ const UserProfileTab = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            Authorization: `Bearer ${
+              localStorage.getItem("admin_token") || ""
+            }`,
           },
         }
       );
 
       // Clear local storage and redirect
-      localStorage.removeItem("token");
+      localStorage.removeItem("admin_token");
       window.location.href = "/login";
     } catch (err) {
       setError(err.response?.data?.message || err.message || "Logout failed");

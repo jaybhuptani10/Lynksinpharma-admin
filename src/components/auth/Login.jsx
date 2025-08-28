@@ -46,11 +46,11 @@ const Login = () => {
         password: formData.password,
       });
 
-      const { token, adminDoc } = response.data.data;
+      const { admin_token, adminDoc } = response.data.data;
 
-      if (response.status === 200 && token) {
+      if (response.status === 200 && admin_token) {
         // Set token in localStorage
-        localStorage.setItem("token", token);
+        localStorage.setItem("admin_token", admin_token);
 
         // Store admin info if needed
         if (adminDoc) {
@@ -58,8 +58,6 @@ const Login = () => {
         }
 
         toast.success("Login successful! Redirecting...");
-
-        console.log("Login successful", adminDoc);
 
         // Use setTimeout to ensure toast shows before redirect
         setTimeout(() => {

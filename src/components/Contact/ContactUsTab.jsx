@@ -32,7 +32,7 @@ const ContactUsTab = () => {
       setError("");
       try {
         const res = await axios.get("/contactus", { withCredentials: true });
-        console.log(res.data);
+
         // Defensive: Accept both res.data.data and res.data.message as arrays
         let messagesData = [];
         if (Array.isArray(res.data.data)) {
