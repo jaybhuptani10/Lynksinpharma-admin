@@ -226,7 +226,7 @@ const JobApplication = () => {
 
         {/* Applications Grid */}
         <ApplicationsGrid
-          filteredApplications={filteredApplications}
+          filteredApplications={[...filteredApplications].reverse()}
           statusIcons={statusIcons}
           openModal={openModal}
           updateApplicationStatus={updateApplicationStatus}
