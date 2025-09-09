@@ -182,7 +182,8 @@ const OrdersTab = () => {
         item.product?.ChemicalName ||
         item.product?.CatelogNumber ||
         "Unknown Product";
-      return `${productName} (${item.quantity || 0})`;
+      const unit = item.product?.unit || "mg";
+      return `${productName} (${item.quantity || 0} ${unit})`;
     });
 
     if (products.length > 2) {
@@ -517,6 +518,10 @@ const OrdersTab = () => {
                                         <h5 className="text-sm font-medium text-gray-900 truncate">
                                           {item.product?.ChemicalName ||
                                             "Unknown Product"}
+                                          <span className=" ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            Qty: {item.quantity || 0}{" "}
+                                            {item.product?.unit || "mg"}
+                                          </span>
                                         </h5>
                                         <p className="text-xs text-gray-500">
                                           Catalog:{" "}
@@ -529,7 +534,8 @@ const OrdersTab = () => {
                                       </div>
                                       <div className="text-right">
                                         <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                          Qty: {item.quantity || 0}
+                                          Qty: {item.quantity || 0}{" "}
+                                          {item.product?.unit || "mg"}
                                         </span>
                                       </div>
                                     </div>
