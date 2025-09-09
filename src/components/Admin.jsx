@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, act } from "react";
 import {
   Wrench,
   ArrowLeft,
@@ -8,6 +8,7 @@ import {
   Users,
   FileText,
   GraduationCap,
+  Briefcase,
 } from "lucide-react";
 import ContactUsTab from "./Contact/ContactUsTab";
 import axios from "axios";
@@ -15,6 +16,7 @@ import Products from "./Products/Products";
 import OrdersTab from "./Orders/OrdersTab";
 import UserProfileTab from "./UserProfile/UserProfileTab";
 import Careers from "./Career/Careers";
+import JobApplication from "./Job-Applications/JobApplication";
 
 const DashboardCard = ({
   title,
@@ -97,6 +99,7 @@ const AdminPanel = () => {
     { id: "orders", label: "Orders", icon: FileText },
     { id: "contact-forms", label: "Contact Forms", icon: Mail },
     { id: "careers", label: "Careers", icon: GraduationCap },
+    { id: "job-application", label: "Job Application", icon: Briefcase },
     { id: "user-profile", label: "User Profile", icon: Users },
   ];
 
@@ -220,6 +223,7 @@ const AdminPanel = () => {
         )}
         {activePage === "contact-forms" && <ContactUsTab />}
         {activePage === "user-profile" && <UserProfileTab />}
+        {activePage === "job-application" && <JobApplication />}
         {activePage === "careers" && <Careers />}
       </div>
     </div>
