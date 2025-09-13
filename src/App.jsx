@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Provider } from "react-redux";
 import axios from "axios";
@@ -13,11 +13,40 @@ const App = () => {
 
   axios.defaults.withCredentials = true;
 
-  // PrivateRoute should always check the latest token
+  // PrivateRoute should always check the latest token and validate it via API
   const PrivateRoute = ({ children }) => {
+    const [isValid, setIsValid] = useState(null);
     const admin_token = localStorage.getItem("admin_token");
-    const isAuthenticated = !!admin_token;
-    return isAuthenticated ? children : <Navigate to="/login" replace />;
+
+    useEffect(() => {
+      const validateToken = async () => {
+        if (!admin_token) {
+          setIsValid(false);
+          return;
+        }
+        try {
+          // Send request with credentials, token will be read from cookie by backend
+          const response = await axios.get("admin/validate", { withCredentials: true });
+          console.log("Validation response:", response);
+          setIsValid(response.data.success === true);
+          if (response.data.success !== true) {
+            localStorage.removeItem("admin_token");
+            localStorage.removeItem("adminInfo");
+          }
+        } catch (err) {
+          setIsValid(false);
+          localStorage.removeItem("admin_token");
+          localStorage.removeItem("adminInfo");
+        }
+      };
+      validateToken();
+    }, []);
+
+    if (isValid === null) {
+      // Optionally show a loading spinner
+      return <div className="flex justify-center items-center h-screen">Validating session...</div>;
+    }
+    return isValid ? children : <Navigate to="/login" replace />;
   };
 
   return (
