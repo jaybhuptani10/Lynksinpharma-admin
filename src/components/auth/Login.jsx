@@ -231,11 +231,6 @@ const Login = () => {
         </div>
 
         {/* Footer */}
-        <div className="mt-8 text-center">
-          <p className="text-sm text-slate-400">
-            © 2024 Admin Dashboard. All rights reserved.
-          </p>
-        </div>
       </div>
 
       {/* Toast Container */}

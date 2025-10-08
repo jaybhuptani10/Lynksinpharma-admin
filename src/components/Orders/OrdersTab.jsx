@@ -382,10 +382,13 @@ const OrdersTab = () => {
                       <td className="px-6 py-4">
                         <div>
                           <div className="text-sm font-medium text-gray-900">
-                            {order?.user?.name || "-"}
+                            {order?.name || "-"}
                           </div>
                           <div className="text-sm text-gray-500">
-                            {order?.user?.email || "-"}
+                            {order?.Email || "-"}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {order?.phone || "-"}
                           </div>
                         </div>
                       </td>
